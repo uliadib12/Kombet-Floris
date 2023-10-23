@@ -9,6 +9,8 @@ import {
 import './index.css'
 import './firebase-init.jsx'
 
+import Home from './routes/Home.jsx';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -17,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Root />,
+        element: <Home title="Home" />,
       },
     ],
   },
