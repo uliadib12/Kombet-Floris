@@ -5,7 +5,7 @@ function Topbar() {
 	const location = useLocation();
 
 	return (
-		<div className="bg-red-200 border-b-4 border-red-800 fixed top-0 w-full z-50">
+		<div className="bg-red-200 border-b-2 border-red-800 fixed top-0 w-full z-50">
 			<div className="container px-4 py-3 sm:mx-auto flex">
 				<Link to={'/'}>
 					Logo
