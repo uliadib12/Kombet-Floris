@@ -30,10 +30,14 @@ function Topbar() {
 						About Us
 					</Link>
 				</div>
+				{/*
 				<div className="flex justify-center grow gap-3 md:hidden">
 					<div>
 						Kategori
 					</div>
+				</div>
+				 */}
+				<div className='grow md:hidden'>
 				</div>
 				<Link to={'/auth'} className='flex'>
 				   <RiAccountBoxLine size={25} className='hover:text-red-400' />
