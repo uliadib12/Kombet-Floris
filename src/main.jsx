@@ -7,7 +7,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import './index.css';
-// import './firebase-init.jsx';
+import './firebase-init.jsx';
 
 import Home from './routes/Home';
 import Auth from './routes/Auth'
