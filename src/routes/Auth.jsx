@@ -1,8 +1,26 @@
 import useDocumentTitle from "src/hooks/useDocumentTitle";
-import { useEffect } from 'react';
+import { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
+function loginUser(email, password, navigation) {
+	const auth = getAuth();
+	signInWithEmailAndPassword(auth, email, password)
+	.then((userCredential) => {
+		navigation("/");
+	})
+	.catch((error) => {
+		// const errorCode = error.code;
+		// const errorMessage = error.message;
+	});
+}
 
 function Auth(){
 	useDocumentTitle("Auth");
+
+	const navigate = useNavigate();
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
 	return (
 		<div className="md:grid grid-cols-2 block">
@@ -21,8 +39,8 @@ function Auth(){
 				            name="email"
 				            placeholder="Email"
 				            className="rounded-md bg-red-100 w-full"
-				            // value={this.state.username}
-				            // onChange={this.handleInputChange}
+				            value={email}
+							onChange={(e)=>{setEmail(e.target.value)}}
 				          />
 				        </div>
 				        <div className="flex">
@@ -34,11 +52,11 @@ function Auth(){
 				            name="password"
 				            placeholder="Password"
 				            className="rounded-md bg-red-100 w-full"
-				            // value={this.state.password}
-				            // onChange={this.handleInputChange}
+				            value={password}
+							onChange={(e)=>{setPassword(e.target.value)}}
 				          />
 				        </div>
-				        <button className="mt-6">Login</button>
+				        <button className="mt-6" onClick={()=>loginUser(email,password,navigate)}>Login</button>
 					</div>
 				</div>
 			</div>

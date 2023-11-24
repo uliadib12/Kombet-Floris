@@ -1,8 +1,18 @@
 import { Link, useLocation } from 'react-router-dom';
 import { RiAccountBoxLine } from 'react-icons/ri';
+import { RiLogoutBoxLine } from 'react-icons/ri';
+
+import { useSelector } from 'react-redux'
+import { useNavigate } from "react-router-dom";
+
+import { getAuth, signOut } from 'firebase/auth';
 
 function Topbar() {
 	const location = useLocation();
+	const user = useSelector(state => state.auth.user);
+	const navigate = useNavigate();
+
+	const auth = getAuth();
 
 	return (
 		<div className="bg-red-200 border-b-2 border-red-800 fixed top-0 w-full z-50">
@@ -39,9 +49,29 @@ function Topbar() {
 				 */}
 				<div className='grow md:hidden'>
 				</div>
-				<Link to={'/auth'} className='flex'>
-				   <RiAccountBoxLine size={25} className='hover:text-red-400' />
-				</Link>
+				{user ?
+				<div className="flex justify-center items-center gap-3">
+					<div>
+						{user.email}
+					</div>
+					<div>
+						<RiAccountBoxLine size={24}/>
+					</div>
+					<div>
+						<RiLogoutBoxLine className="hover:text-red-500 cursor-pointer" size={24} onClick={()=>{
+							signOut(auth).then(() => {
+								navigate('/');
+							})
+						}}/>
+					</div>
+				</div>
+				:
+				<div className="flex justify-center items-center gap-3">
+					<Link to={'/auth'}>
+						Login
+					</Link>
+				</div>
+				}
 			</div>
 		</div>
 	);

@@ -1,6 +1,7 @@
 import useDocumentTitle from "src/hooks/useDocumentTitle";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
+import { Link } from "react-router-dom";
 
 function Home(props) {
 	useDocumentTitle(props.title);
@@ -18,38 +19,38 @@ function Home(props) {
 					Produk Kami
 				</div>
 				<div className='justify-center justify-items-center grid xl:grid-cols-4 md:grid-cols-2 md:grid-row-2 grid-row-4 gap-3'>
-					<div className='w-full text-center'>
+					<Link to={"/papan-bunga"} className='w-full text-center'>
 						<div className='rounded-xl h-[300px] w-[300px] bg-red-200 overflow-hidden border-4 border-red-200'>
 							<img className="hover:scale-125 transition duration-500 cursor-pointer" src='https://tokobungamurah.com/wp-content/uploads/2020/12/bunga-papan-selamat-berbahagia-atas-pernikahan-ananda-harga-500-ribu-akuntansi-universitas-andalas-padang.jpg' />
 						</div>
 						<div className='font-bold'>
 							Papan Bunga
 						</div>
-					</div>
-					<div className='w-full text-center'>
+					</Link>
+					<Link to={"/bouquet"} className='w-full text-center'>
 						<div className='rounded-xl h-[300px] w-[300px] bg-red-200 overflow-hidden border-4 border-red-200'>
 							<img className="hover:scale-125 transition duration-500 cursor-pointer" src='https://www.800flower.ae/cdn/shop/products/summer-floral-original.jpg?v=1695355385' />
 						</div>
 						<div className='font-bold'>
 							Bouquet
 						</div>
-					</div>
-					<div className='w-full text-center'>
+					</Link>
+					<Link to={"/money-cake"} className='w-full text-center'>
 						<div className='rounded-xl h-[300px] w-[300px] bg-red-200 overflow-hidden border-4 border-red-200'>
 							<img className="hover:scale-125 transition duration-500 cursor-pointer" src="https://ulasan.co/wp-content/uploads/2022/08/Money-Cake.jpg.webp" />
 						</div>
 						<div className='font-bold'>
 							Money Cake
 						</div>
-					</div>
-					<div className='w-full text-center'>
+					</Link>
+					<Link to={"/snack-tower"} className='w-full text-center'>
 						<div className='rounded-xl h-[300px] w-[300px] bg-red-200 overflow-hidden border-4 border-red-200'>
 							<img className="hover:scale-125 transition duration-500 cursor-pointer" src="https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/10/19/76c70b3b-9790-40bc-a1cb-462f5c8fb187.jpg" />
 						</div>
 						<div className='font-bold'>
 							Snack Tower
 						</div>
-					</div>
+					</Link>
 				</div>
 			</div>
 			<div className='flex justify-center items-center mt-4 mr-5'>
@@ -63,7 +64,8 @@ function Home(props) {
 			</div>
 			<div className='bg-red-300 p-10 mt-4'>
 				<div className='text-2xl'>
-					<b>Kombet Floris </b><br/>
+					<h1><b>ABOUT US</b></h1><br/>
+					Kombet Floris<br/>
 				</div>
 				PAPAN BUNGA, BOUQUET, MONEY CAKE, SNACK TOWER BANDAR LAMPUNG <br/>
 				📍DIJAMIN HARGA PELAJAR <br/>
