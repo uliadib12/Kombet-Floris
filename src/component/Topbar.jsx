@@ -52,7 +52,7 @@ function Topbar() {
 				{user ?
 				<div className="flex justify-center items-center gap-3">
 					<div>
-						{user.email}
+						{user.displayName ? user.displayName : user.email}
 					</div>
 					<div>
 						<RiAccountBoxLine size={24}/>

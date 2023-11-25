@@ -1,7 +1,12 @@
 import useDocumentTitle from "src/hooks/useDocumentTitle";
 import { useState } from "react";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { google_provider } from "../firebase-init";
+import { set_token } from "../slices/authSlice";
+import { useDispatch } from "react-redux";
+
+import { FaGoogle } from "react-icons/fa";
 
 function loginUser(email, password, payload) {
 	if(email === "" || password === ""){
@@ -50,6 +55,25 @@ function registerUser(email, password, confirmPassword, payload) {
 	});
 }
 
+function loginWithGoogle({setError, dispatch, navigate}) {
+	const auth = getAuth();
+	const provider = google_provider;
+	signInWithPopup(auth, provider).
+		then((result) => {
+			const credential = GoogleAuthProvider.credentialFromResult(result);
+			const token = credential.accessToken;
+			const user = result.user;
+			dispatch(set_token({token}));
+			navigate("/");
+		}
+	).catch((error) => {
+			// remove Firebase Prefix
+			let errorMessage = error.message.split(":")[1];
+			setError(errorMessage);
+		}
+	);
+}
+
 function Auth(){
 	useDocumentTitle("Auth");
 	const [register, setRegister] = useState(false);
@@ -72,6 +96,7 @@ function Auth(){
 
 function LoginComponent({setRegister}) {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -109,7 +134,7 @@ function LoginComponent({setRegister}) {
 					type="email"
 					name="email"
 					placeholder="Email"
-					className="rounded-md bg-red-100 w-full"
+					className="rounded-md bg-red-100 w-full p-2"
 					value={email}
 					onChange={(e)=>{setEmail(e.target.value)}}
 				  />
@@ -122,7 +147,7 @@ function LoginComponent({setRegister}) {
 					type="password"
 					name="password"
 					placeholder="Password"
-					className="rounded-md bg-red-100 w-full"
+					className="rounded-md bg-red-100 w-full p-2"
 					value={password}
 					onChange={(e)=>{setPassword(e.target.value)}}
 				  />
@@ -132,6 +157,14 @@ function LoginComponent({setRegister}) {
 				</div>
 				<div className="text-red-400 text-center mt-2">
 					Belum Punya Akun? <span className="text-red-500 font-bold cursor-pointer" onClick={()=>{setRegister(true)}}>Register</span>
+				</div>
+				<div className="text-center flex flex-col">
+					<div type="submit" className="mt-6 text-center">Login with</div>
+					<div className="flex justify-center mt-2">
+						<div onClick={()=>{loginWithGoogle({setError, dispatch, navigate})}} className="hover:text-red-700 cursor-pointer bg-red-400 rounded-md px-2 py-2 h-10 w-10 flex justify-center items-center">
+							<FaGoogle size={20}/>
+						</div>
+					</div>
 				</div>
 			</div>}
 		</>
@@ -178,7 +211,7 @@ function RegisterComponent({setRegister}) {
 					type="email"
 					name="email"
 					placeholder="Email"
-					className="rounded-md bg-red-100 w-full"
+					className="rounded-md bg-red-100 w-full p-2"
 					value={email}
 					onChange={(e)=>{setEmail(e.target.value)}}
 				  />
@@ -191,7 +224,7 @@ function RegisterComponent({setRegister}) {
 					type="password"
 					name="password"
 					placeholder="Password"
-					className="rounded-md bg-red-100 w-full"
+					className="rounded-md bg-red-100 w-full p-2"
 					value={password}
 					onChange={(e)=>{setPassword(e.target.value)}}
 				  />
@@ -204,7 +237,7 @@ function RegisterComponent({setRegister}) {
 					type="password"
 					name="confirm_password"
 					placeholder="Confirm Password"
-					className="rounded-md bg-red-100 w-full"
+					className="rounded-md bg-red-100 w-full p-2"
 					value={confirmPassword}
 					onChange={(e)=>{setConfirmPassword(e.target.value)}}
 				  />
