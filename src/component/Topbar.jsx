@@ -36,9 +36,9 @@ function Topbar() {
 					<Link to={'/snack-tower'} className={location.pathname === '/snack-tower' ? 'hover:text-red-400 font-bold' : 'hover:text-red-400'}>
 						Snack Tower
 					</Link>
-					<Link to={'/about'} className={location.pathname === '/about' ? 'hover:text-red-400 font-bold' : 'hover:text-red-400'}>
+					{/* <Link to={'/about'} className={location.pathname === '/about' ? 'hover:text-red-400 font-bold' : 'hover:text-red-400'}>
 						About Us
-					</Link>
+					</Link> */}
 				</div>
 				{/*
 				<div className="flex justify-center grow gap-3 md:hidden">
@@ -67,7 +67,7 @@ function Topbar() {
 				</div>
 				:
 				<div className="flex justify-center items-center gap-3">
-					<Link to={'/auth'}>
+					<Link className="hover:text-red-400" to={'/auth'}>
 						Login
 					</Link>
 				</div>
