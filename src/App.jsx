@@ -20,7 +20,7 @@ export function App(props) {
 
     return (
         <div className="App">
-        {props.children}
+            {props.children}
         </div>
     )
 }

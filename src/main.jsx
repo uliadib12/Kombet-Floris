@@ -14,7 +14,7 @@ import './firebase-init.jsx';
 
 import Home from './routes/Home';
 import Auth from './routes/Auth';
-import Kategori from './routes/Kategori';
+import ProdukKategori from './routes/ProdukKategori.jsx';
 import { App } from './App.jsx';
 
 const router = createBrowserRouter([
@@ -29,19 +29,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/papan-bunga",
-        element: <Kategori title="Papan Bunga"/>
+        element: <ProdukKategori title="Papan Bunga" path='papan-bunga'/>
       },
       {
         path: "/bouquet",
-        element: <Kategori title="Bouquet"/>
+        element: <ProdukKategori title="Bouquet" path='bouquet'/>
       },
       {
         path: "/money-cake",
-        element: <Kategori title="Money Cake"/>
+        element: <ProdukKategori title="Money Cake" path='money-cake'/>
       },
       {
         path: "/snack-tower",
-        element: <Kategori title="Snack Tower"/>
+        element: <ProdukKategori title="Snack Tower" path='snack-tower'/>
       },
     ],
   },

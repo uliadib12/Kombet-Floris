@@ -55,7 +55,12 @@ function Topbar() {
 						{user.displayName ? user.displayName : user.email}
 					</div>
 					<div>
-						<RiAccountBoxLine size={24}/>
+						{user.photoURL ? 
+						<div className='rounded-full overflow-hidden h-7 w-7'>
+							<img src={user.photoURL} referrerPolicy="no-referrer" /> 
+						</div>
+						: 
+						<RiAccountBoxLine size={24}/>}
 					</div>
 					<div>
 						<RiLogoutBoxLine className="hover:text-red-500 cursor-pointer" size={24} onClick={()=>{
