@@ -38,8 +38,11 @@ async function getData(produkKategori) {
             });
 
             const produkSnap = await Promise.all(produkPromises);
-            const produkData = produkSnap.map((produkDoc) => {
-                return produkDoc.data();
+            const produkData = produkSnap.map((produk) => {
+                return {
+                    id: produk.id,
+                    ...produk.data(),
+                };
             });
 
             data[i] = {
@@ -87,13 +90,18 @@ function ProdukKategori(props){
             {
                 data.map((item, index) => 
                     <div id={item.kategori} key={index} className="mb-4">
-                        <h2 className="text-2xl font-bold">
-                            {item.kategori}
-                        </h2>
-                        <div className="w-full h-1 bg-gray-300 my-2"></div>
+                        {
+                            item.kategori === "null" ? <div className="mb-10"></div> :
+                            <>
+                                <h2 className="text-2xl font-bold">
+                                    {item.kategori}
+                                </h2>
+                                <div className="w-full h-1 bg-gray-300 my-2"></div>
+                            </>
+                        }
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {item.produk.map((produk, index) => 
-                                <div key={index} className="border-dashed border-2 border-red-100 rounded-2xl overflow-hidden">
+                                <div id={produk.id} key={index} className="border-dashed border-2 border-red-100 rounded-2xl overflow-hidden">
                                     <div className="w-full h-64 bg-gray-300 flex justify-center">
                                         <img src={produk.gambar} alt={produk.nama} className="object-cover h-full"/>
                                     </div>
@@ -101,12 +109,14 @@ function ProdukKategori(props){
                                         <div className="text-center text-xl font-bold my-2">
                                             {produk.nama}
                                         </div>
+                                        { produk.deskripsi &&
                                         <div className="text-center">
                                             {produk.deskripsi}
-                                        </div>
+                                        </div>}
+                                        { produk.ukuran &&
                                         <div className="text-center">
                                             Ukuran: {produk.ukuran}
-                                        </div>
+                                        </div>}
                                         <div className="text-center text-xl font-bold my-2">
                                             Rp. {produk.harga}
                                         </div>
