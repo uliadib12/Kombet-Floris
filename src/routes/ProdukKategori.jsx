@@ -9,136 +9,173 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { LuShoppingCart } from "react-icons/lu";
 
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
+
 async function getData(produkKategori) {
     const app = getApp();
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    let data = [{}];
+    let data = [];
 
     const kategori = [];
-
     const kategoriRef = collection(db, produkKategori);
     const kategoriSnap = await getDocs(kategoriRef);
-    
+
     kategoriSnap.forEach((doc) => {
         kategori.push(doc.id);
     });
+    const kategoriProdukPromises = kategori.map((kategori) => {
+        return getDoc(doc(db, produkKategori, kategori));
+    });
+    const kategoriProdukSnap = await Promise.all(kategoriProdukPromises);
 
-    // loop through every kategori
+    let produkPromises = [];
+    kategoriProdukSnap.forEach((doc) => {
+        const produkRefs = doc.data().produk;
+        produkPromises = produkPromises.concat(produkRefs.map((produkRef) => {
+            return getDoc(produkRef);
+        }));
+    });
+    const produkSnap = await Promise.all(produkPromises);
+
+    let produkData = [];
+
+    produkSnap.forEach((produk) => {
+        produkData.push({
+            id: produk.id,
+            ...produk.data(),
+        });
+    });
+
     for (let i = 0; i < kategori.length; i++) {
-        const kategoriRef = doc(db, produkKategori, kategori[i]);
-        const kategoriSnap = await getDoc(kategoriRef);
-
-        if (kategoriSnap.exists()) {
-            const produkRefs = kategoriSnap.data().produk;
-
-            const produkPromises = produkRefs.map((produkRef) => {
-                return getDoc(produkRef);
-            });
-
-            const produkSnap = await Promise.all(produkPromises);
-            const produkData = produkSnap.map((produk) => {
-                return {
-                    id: produk.id,
-                    ...produk.data(),
-                };
-            });
-
-            data[i] = {
-                kategori: kategori[i],
-                produk: produkData,
-            };
-        } else {
-            console.log("No such document!");
-        }
+        data[i] = {
+            kategori: kategori[i],
+            produk: produkData,
+        };
     }
+
+    return data;
+}
+
+async function getImage(data) {
+    const app = getApp();
+    const storage = getStorage(app);
+
+    const imagePromises = data.map((item) => {
+        return item.produk.map((produk) => {
+            const imageRef = ref(storage, produk.gambar);
+            return getDownloadURL(imageRef);
+        });
+    });
+
+    const imageUrls = await Promise.all(imagePromises);
+    const imageUrlsPromises = imageUrls.map((item) => {
+        return Promise.all(item);
+    });
+
+    const imageUrlsData = await Promise.all(imageUrlsPromises);
 
     for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[i].produk.length; j++) {
-            const imageRef = ref(storage, data[i].produk[j].gambar);
-            const imageUrl = await getDownloadURL(imageRef);
-            data[i].produk[j].gambar = imageUrl;
+            data[i].produk[j].gambar = imageUrlsData[i][j];
         }
     }
 
     return data;
 }
 
-function ProdukKategori(props){
+function ProdukKategori(props) {
     useDocumentTitle(props.title);
     const [data, setData] = useState([]);
+    const [imageLoading, setImageLoading] = useState(true);
 
     useEffect(() => {
+        setImageLoading(true);
         setData([]);
-        getData(props.path).then((data) => {
+        let data = getData(props.path)
+        data.then((data) => {
             setData(data);
+            let image = getImage(data)
+            image.then((datas) => {
+                setData(datas);
+                setImageLoading(false);
+            });
+        }).catch((error) => {
+            console.log(error);
         });
     }, [props.title]);
 
     return (
-    <>
-        { data.length === 0 ?
-        <div className="w-full h-screen flex justify-center items-center">
-                <SyncLoader color="#fecaca" />
-        </div>
-        :
-        <div className="container mt-20 mx-auto ">
-            <h1 className="text-center text-4xl font-bold mb-4">
-                {props.title}
-            </h1>
-            {
-                data.map((item, index) => 
-                    <div id={item.kategori} key={index} className="mb-4">
-                        {
-                            item.kategori === "null" ? <div className="mb-10"></div> :
-                            <>
-                                <h2 className="text-2xl font-bold">
-                                    {item.kategori}
-                                </h2>
-                                <div className="w-full h-1 bg-gray-300 my-2"></div>
-                            </>
-                        }
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {item.produk.map((produk, index) => 
-                                <div id={produk.id} key={index} className="border-dashed border-2 border-red-100 rounded-2xl overflow-hidden">
-                                    <div className="w-full h-64 bg-gray-300 flex justify-center">
-                                        <img src={produk.gambar} alt={produk.nama} className="object-cover h-full"/>
-                                    </div>
-                                    <div className="p-2">
-                                        <div className="text-center text-xl font-bold my-2">
-                                            {produk.nama}
-                                        </div>
-                                        { produk.deskripsi &&
-                                        <div className="text-center">
-                                            {produk.deskripsi}
-                                        </div>}
-                                        { produk.ukuran &&
-                                        <div className="text-center">
-                                            Ukuran: {produk.ukuran}
-                                        </div>}
-                                        <div className="text-center text-xl font-bold my-2">
-                                            Rp. {produk.harga}
-                                        </div>
-                                        <div className="w-full mb-4 flex justify-center">
-                                            <button className="hover:bg-red-500 bg-red-400 text-white rounded-md px-4 py-2 mt-4 font-semibold">
-                                                <LuShoppingCart className="inline-block mr-2" size={24} /> Pesan
-                                            </button>
-                                            {/* Keranjang */}
-                                            {/* <button className="bg-red-400 text-white rounded-md px-4 py-2 mt-4 ml-2">
+        <>
+            {data.length === 0 ?
+                <div className="w-full h-screen flex justify-center items-center">
+                    <SyncLoader color="#fecaca" />
+                </div>
+                :
+                <div className="container mt-20 mx-auto ">
+                    <h1 className="text-center text-4xl font-bold mb-4">
+                        {props.title}
+                    </h1>
+                    {
+                        data.map((item, index) =>
+                            <div id={item.kategori} key={index} className="mb-4">
+                                {
+                                    item.kategori === "null" ? <div className="mb-10"></div> :
+                                        <>
+                                            <h2 className="text-2xl font-bold">
+                                                {item.kategori}
+                                            </h2>
+                                            <div className="w-full h-1 bg-gray-300 my-2"></div>
+                                        </>
+                                }
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {item.produk.map((produk, index) =>
+                                        <div id={produk.id} key={index} className="border-dashed border-2 border-red-100 rounded-2xl overflow-hidden">
+                                            {
+                                                imageLoading
+                                                    ?
+                                                    <Skeleton className="w-full h-64" />
+                                                    :
+                                                    <div className="w-full h-64 bg-gray-300 flex justify-center">
+                                                        <img src={produk.gambar} alt={produk.nama} className="object-cover h-full" />
+                                                    </div>
+                                            }
+                                            <div className="p-2">
+                                                <div className="text-center text-xl font-bold my-2">
+                                                    {produk.nama}
+                                                </div>
+                                                {produk.deskripsi &&
+                                                    <div className="text-center">
+                                                        {produk.deskripsi}
+                                                    </div>}
+                                                {produk.ukuran &&
+                                                    <div className="text-center">
+                                                        Ukuran: {produk.ukuran}
+                                                    </div>}
+                                                <div className="text-center text-xl font-bold my-2">
+                                                    Rp. {produk.harga}
+                                                </div>
+                                                <div className="w-full mb-4 flex justify-center">
+                                                    <button className="hover:bg-red-500 bg-red-400 text-white rounded-md px-4 py-2 mt-4 font-semibold">
+                                                        <LuShoppingCart className="inline-block mr-2" size={24} /> Pesan
+                                                    </button>
+                                                    {/* Keranjang */}
+                                                    {/* <button className="bg-red-400 text-white rounded-md px-4 py-2 mt-4 ml-2">
                                                 Keranjang
                                             </button> */}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    </div>
-                )
-            }
-            
-        </div>}
-    </>
+                            </div>
+                        )
+                    }
+
+                </div>}
+        </>
     )
 }
 
