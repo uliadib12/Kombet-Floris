@@ -1,0 +1,88 @@
+.Body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 1.2rem;
+}
+
+.Body h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-block: 5rem;
+}
+
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+.left-wrap {
+  flex: 1;
+}
+.left-wrap img {
+  border-radius: 12px;
+}
+.right-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+  gap: 2rem;
+}
+.right-wrap p span {
+  font-weight: 700;
+  font-size: 20px;
+}
+.bottom h2 {
+  font-size: 25px;
+  font-weight: 700;
+}
+.quantity-section {
+  display: flex;
+  align-items: center;
+}
+
+.quantity-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 2px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.quantity-display {
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0 10px;
+}
+
+.customer-details {
+  margin-top: 20px;
+}
+.detail-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-wrap: nowrap;
+}
+.customer-details label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.customer-details input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1.4px solid #1c1c1c;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.hover\:bg-red-500:hover {
+  background-color: #f44336;
+}
